@@ -17,14 +17,14 @@ import {
 import { useRouter } from "next/navigation";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/medicines", label: "Medicines", icon: Pill },
-  { href: "/receive", label: "Receive", icon: PackagePlus },
-  { href: "/dispense", label: "Dispense", icon: PackageMinus },
-  { href: "/inventory", label: "Inventory", icon: Archive },
-  { href: "/history", label: "History", icon: History },
-  { href: "/reports", label: "Reports", icon: BarChart3 },
-  { href: "/scan", label: "Scan", icon: ScanBarcode },
+  { href: "/dashboard", label: "แดชบอร์ด", icon: LayoutDashboard },
+  { href: "/medicines", label: "รายการยา", icon: Pill },
+  { href: "/receive", label: "รับยาเข้าคลัง", icon: PackagePlus },
+  { href: "/dispense", label: "จ่ายยา", icon: PackageMinus },
+  { href: "/inventory", label: "คลังยา", icon: Archive },
+  { href: "/history", label: "ประวัติการทำรายการ", icon: History },
+  { href: "/reports", label: "รายงาน", icon: BarChart3 },
+  { href: "/scan", label: "สแกนบาร์โค้ด", icon: ScanBarcode },
 ];
 
 export function Sidebar() {
@@ -49,7 +49,7 @@ export function Sidebar() {
           <p className="text-sm font-semibold text-foreground leading-tight">
             PharmaCare
           </p>
-          <p className="text-xs text-muted-foreground">Inventory</p>
+          <p className="text-xs text-muted-foreground">ระบบจัดการคลังยา</p>
         </div>
       </div>
 
@@ -82,7 +82,7 @@ export function Sidebar() {
           className="flex items-center gap-3 px-3 py-2 w-full rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
           <LogOut className="w-4 h-4 shrink-0" />
-          Sign Out
+          ออกจากระบบ
         </button>
       </div>
     </aside>
