@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import { toast } from "sonner";
+import { signIn } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,29 +12,25 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Pill, Loader2 } from "lucide-react";
+import { Pill, Loader2, AlertCircle } from "lucide-react";
 
 export function LoginForm() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
-      toast.error(error.message);
-    } else {
-      router.push("/dashboard");
-      router.refresh();
+    setErrorMsg("");
+
+    const formData = new FormData(e.currentTarget);
+    const result = await signIn(formData);
+
+    if (result?.error) {
+      setErrorMsg(result.error);
+      setLoading(false);
     }
-    setLoading(false);
+    // On success, signIn() calls redirect() server-side — no client navigation needed
   }
 
   return (
@@ -47,9 +41,7 @@ export function LoginForm() {
             <Pill className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-xl font-semibold text-foreground">PharmaCare</h1>
-          <p className="text-sm text-muted-foreground">
-            Pharmacy Inventory System
-          </p>
+          <p className="text-sm text-muted-foreground">Pharmacy Inventory System</p>
         </div>
 
         <Card>
@@ -63,10 +55,9 @@ export function LoginForm() {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={loading}
                 />
@@ -75,14 +66,21 @@ export function LoginForm() {
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={loading}
                 />
               </div>
+
+              {errorMsg && (
+                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  {errorMsg}
+                </div>
+              )}
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 Sign In
