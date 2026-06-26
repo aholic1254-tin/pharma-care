@@ -5,9 +5,10 @@ import type { Database } from "@/types/database";
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://ztpqoolcqsfootlfkczo.supabase.co";
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0cHFvb2xjcXNmb290bGZrY3pvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODQwMjUsImV4cCI6MjA5ODA2MDAyNX0.mJUjKv9bFqTBU-pHRmsoHSXnjmeDVYSBC2esUThnFq8";
+
+  return createServerClient<Database>(url, key,
     {
       cookies: {
         getAll() {
