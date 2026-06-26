@@ -50,16 +50,6 @@ export type Database = {
           Database["public"]["Tables"]["drugs"]["Insert"]
         >;
       };
-      drug_barcodes: {
-        Row: {
-          id: number;
-          drug_id: number;
-          barcode: string;
-          created_at: string;
-        };
-        Insert: { drug_id: number; barcode: string };
-        Update: { barcode?: string };
-      };
       lots: {
         Row: {
           id: number;
@@ -123,6 +113,17 @@ export type Database = {
         Update: Partial<
           Database["public"]["Tables"]["dispense_transactions"]["Insert"]
         >;
+      };
+      drug_barcodes: {
+        Row: {
+          id: number;
+          barcode: string;
+          drug_id: number;
+          note: string | null;
+          created_at: string;
+        };
+        Insert: { barcode: string; drug_id: number; note?: string | null };
+        Update: { barcode?: string; drug_id?: number; note?: string | null };
       };
     };
   };

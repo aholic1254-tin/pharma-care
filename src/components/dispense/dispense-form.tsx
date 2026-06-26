@@ -20,15 +20,18 @@ import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@/components/ui/form";
 import { DrugCombobox } from "@/components/shared/drug-combobox";
+import { ScanButton } from "@/components/shared/scan-button";
 import { LotAllocationPreview } from "./lot-allocation-preview";
 import type { DrugWithForm } from "@/lib/supabase/medicines";
 import type { LotForDispense } from "@/lib/supabase/dispense";
+import type { BarcodeMatch } from "@/lib/supabase/barcodes";
 
 interface Props {
   drugs: DrugWithForm[];
+  initialDrugId?: number;
 }
 
-export function DispenseForm({ drugs }: Props) {
+export function DispenseForm({ drugs, initialDrugId = 0 }: Props) {
   const [lots, setLots] = useState<LotForDispense[]>([]);
   const [loadingLots, setLoadingLots] = useState(false);
   const [allocations, setAllocations] = useState<LotAllocation[]>([]);
@@ -37,7 +40,7 @@ export function DispenseForm({ drugs }: Props) {
   const form = useForm<DispenseFormValues>({
     resolver: zodResolver(dispenseSchema),
     defaultValues: {
-      drug_id: 0,
+      drug_id: initialDrugId,
       dispense_date: format(new Date(), "yyyy-MM-dd"),
       quantity: 1,
       patient_name: "",
@@ -147,7 +150,12 @@ export function DispenseForm({ drugs }: Props) {
           {/* Medicine */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold">Medicine</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold">Medicine</CardTitle>
+                <ScanButton
+                  onMatch={(match: BarcodeMatch) => form.setValue("drug_id", match.drug_id, { shouldValidate: true })}
+                />
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField

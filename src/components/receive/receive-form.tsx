@@ -24,22 +24,25 @@ import {
 } from "@/components/ui/form";
 import { DrugCombobox } from "@/components/shared/drug-combobox";
 import { CreatableSelect, type SelectOption } from "@/components/shared/creatable-select";
+import { ScanButton } from "@/components/shared/scan-button";
 import type { DrugWithForm } from "@/lib/supabase/medicines";
+import type { BarcodeMatch } from "@/lib/supabase/barcodes";
 
 interface Props {
   drugs: DrugWithForm[];
   initialSuppliers: SelectOption[];
   initialPackageTypes: SelectOption[];
+  initialDrugId?: number;
 }
 
-export function ReceiveForm({ drugs, initialSuppliers, initialPackageTypes }: Props) {
+export function ReceiveForm({ drugs, initialSuppliers, initialPackageTypes, initialDrugId = 0 }: Props) {
   const [suppliers, setSuppliers] = useState<SelectOption[]>(initialSuppliers);
   const [packageTypes, setPackageTypes] = useState<SelectOption[]>(initialPackageTypes);
 
   const form = useForm<ReceiveFormValues>({
     resolver: zodResolver(receiveSchema),
     defaultValues: {
-      drug_id: 0,
+      drug_id: initialDrugId,
       receive_date: format(new Date(), "yyyy-MM-dd"),
       lot_code: "",
       quantity: 1,
@@ -169,7 +172,12 @@ export function ReceiveForm({ drugs, initialSuppliers, initialPackageTypes }: Pr
           {/* Medicine */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold">Medicine</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold">Medicine</CardTitle>
+                <ScanButton
+                  onMatch={(match: BarcodeMatch) => form.setValue("drug_id", match.drug_id, { shouldValidate: true })}
+                />
+              </div>
             </CardHeader>
             <CardContent>
               <FormField
