@@ -1,3 +1,7 @@
-export default function DispensePage() {
-  return <div className="text-muted-foreground text-sm">Dispense Medicine — coming in Phase 6</div>;
+import { getDrugs } from "@/lib/supabase/medicines";
+import { DispenseForm } from "@/components/dispense/dispense-form";
+
+export default async function DispensePage() {
+  const drugs = await getDrugs();
+  return <DispenseForm drugs={drugs} />;
 }
